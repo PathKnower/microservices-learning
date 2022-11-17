@@ -1,20 +1,15 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
 WORKDIR /src
-COPY ["MicroservicesLearning.CommandsService/MicroservicesLearning.CommandsService.csproj", "MicroservicesLearning.CommandsService/"]
-RUN dotnet restore "MicroservicesLearning.CommandsService/MicroservicesLearning.CommandsService.csproj"
+COPY ["MicroservicesLearning.CommandsService.csproj", "."]
+RUN dotnet restore "MicroservicesLearning.CommandsService.csproj"
 COPY . .
-WORKDIR "/src/MicroservicesLearning.CommandsService"
-RUN dotnet build "MicroservicesLearning.CommandsService.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "MicroservicesLearning.CommandsService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR "/src"
+RUN dotnet publish "MicroservicesLearning.CommandsService.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

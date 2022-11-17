@@ -6,3 +6,5 @@
 /MicroservicesLearning/.vs
 /MicroservicesLearning/MicroservicesLearning.PlatformService/obj
 /MicroservicesLearning/MicroservicesLearning.PlatformService/bin
+MicroservicesLearning/MicroservicesLearning.PlatformService/.vscode/launch.json
+MicroservicesLearning/MicroservicesLearning.PlatformService/.vscode/tasks.json

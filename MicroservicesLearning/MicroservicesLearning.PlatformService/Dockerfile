@@ -5,16 +5,13 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
 WORKDIR /src
-COPY ["MicroservicesLearning.PlatformService/MicroservicesLearning.PlatformService.csproj", "MicroservicesLearning.PlatformService/"]
-RUN dotnet restore "MicroservicesLearning.PlatformService/MicroservicesLearning.PlatformService.csproj"
+COPY ["MicroservicesLearning.PlatformService.csproj", "."]
+RUN dotnet restore "MicroservicesLearning.PlatformService.csproj"
 COPY . .
-WORKDIR "/src/MicroservicesLearning.PlatformService"
-RUN dotnet build "MicroservicesLearning.PlatformService.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "MicroservicesLearning.PlatformService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR "/src"
+RUN dotnet publish "MicroservicesLearning.PlatformService.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

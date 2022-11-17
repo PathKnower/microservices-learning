@@ -8,3 +8,5 @@
 /MicroservicesLearning/MicroservicesLearning.PlatformService/bin
 MicroservicesLearning/MicroservicesLearning.PlatformService/.vscode/launch.json
 MicroservicesLearning/MicroservicesLearning.PlatformService/.vscode/tasks.json
+/MicroservicesLearning/MicroservicesLearning.CommandsService/obj
+/MicroservicesLearning/MicroservicesLearning.CommandsService/bin

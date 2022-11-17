@@ -2,7 +2,7 @@
 using MicroservicesLearning.PlatformService.Data;
 using MicroservicesLearning.PlatformService.Dtos;
 using MicroservicesLearning.PlatformService.Models;
-using Microsoft.AspNetCore.Http;
+using MicroservicesLearning.PlatformService.SyncDataServices.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesLearning.PlatformService.Controllers
@@ -13,13 +13,16 @@ namespace MicroservicesLearning.PlatformService.Controllers
     {
         private readonly IPlatformRepository _platformRepository;
         private readonly IMapper _mapper;
+        private readonly ICommandDataClient _commandDataClient;
 
         public PlatformsController(
             IPlatformRepository platformRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ICommandDataClient commandDataClient)
         {
             _platformRepository = platformRepository;
             _mapper = mapper;
+            _commandDataClient = commandDataClient;
         }
 
         [HttpGet]
@@ -43,13 +46,22 @@ namespace MicroservicesLearning.PlatformService.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreatePlatform(PlatformCreateDto platformCreateDto)
+        public async Task<IActionResult> CreatePlatform(PlatformCreateDto platformCreateDto)
         {
             var platformModel = _mapper.Map<Platform>(platformCreateDto);
             _platformRepository.CreatePlatform(platformModel);
             _platformRepository.SaveChanges();
 
             var platformReadDto = _mapper.Map<PlatformReadDto>(platformModel);
+
+            try
+            {
+                await _commandDataClient.SendPlatformToCommand(platformReadDto);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
+            }
 
             return CreatedAtRoute(nameof(GetPlatformById), new { Id = platformReadDto.Id}, platformReadDto);
         }

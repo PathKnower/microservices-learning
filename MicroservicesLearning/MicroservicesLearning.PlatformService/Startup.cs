@@ -1,4 +1,5 @@
 ﻿using MicroservicesLearning.PlatformService.Data;
+using MicroservicesLearning.PlatformService.SyncDataServices.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroservicesLearning.PlatformService
@@ -8,13 +9,12 @@ namespace MicroservicesLearning.PlatformService
         public static void ConfigureServices(this IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemory"));
-
             services.RegisterRepositories();
 
+            services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddControllers();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
         }
@@ -26,6 +26,8 @@ namespace MicroservicesLearning.PlatformService
 
         public static void Configure(this WebApplication app)
         {
+            Console.WriteLine($"--> Command Service uri: {app.Configuration["CommandServiceUri"]}");
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

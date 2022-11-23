@@ -1,7 +1,9 @@
 using MicroservicesLearning.PlatformService;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.ConfigureServices();
+Startup.ConfigureServices(builder.Services, 
+    builder.Environment, 
+    builder.Configuration);
 
 var app = builder.Build();
 app.Configure();

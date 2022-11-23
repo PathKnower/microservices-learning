@@ -6,9 +6,22 @@ namespace MicroservicesLearning.PlatformService
 {
     public static class Startup
     {
-        public static void ConfigureServices(this IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services,
+            IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemory"));
+            if (webHostEnvironment.IsProduction())
+            {
+                Console.WriteLine($"--> Using SQL Server database");
+                services.AddDbContext<AppDbContext>(options => 
+                    options.UseSqlServer(configuration.GetConnectionString("PlatformsConnection")));
+            }
+            else
+            {
+                Console.WriteLine($"--> Using InMemory database");
+                services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemory"));
+            }
+            
             services.RegisterRepositories();
 
             services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
@@ -40,7 +53,7 @@ namespace MicroservicesLearning.PlatformService
 
             app.MapControllers();
 
-            PrepDb.PrepPopulation(app);
+            PrepDb.PrepPopulation(app, app.Environment.IsProduction());
         }
     }
 }

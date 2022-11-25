@@ -1,4 +1,5 @@
 ﻿
+using MicroservicesLearning.CommandsService.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroservicesLearning.CommandsService
@@ -7,6 +8,8 @@ namespace MicroservicesLearning.CommandsService
     {
         public static void ConfigureServices(this IServiceCollection services)
         {
+            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemory"));
+
             services.RegisterRepositories();
 
             services.AddControllers();
@@ -18,6 +21,8 @@ namespace MicroservicesLearning.CommandsService
 
         private static void RegisterRepositories(this IServiceCollection services)
         {
+            services.AddScoped<ICommandRepo, CommandRepo>();
+            services.AddScoped<IPlatformRepo, PlatformRepo>();
         }
 
         public static void Configure(this WebApplication app)

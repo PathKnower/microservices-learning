@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using MicroservicesLearning.CommandsService.Attributes;
 using MicroservicesLearning.CommandsService.Data;
 using MicroservicesLearning.CommandsService.Dtos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesLearning.CommandsService.Controllers
 {
+    [ServiceFilter(typeof(CheckPlatformExistsServiceFilter))]
     [Route("api/c/platforms/{platformId}/[controller]")]
     [ApiController]
     public class CommandsController : ControllerBase
@@ -24,11 +25,6 @@ namespace MicroservicesLearning.CommandsService.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<CommandReadDto>> GetCommandsForPlatform(int platformId)
         {
-            if (PlatformExists(platformId))
-            {
-                return NotFound();
-            }
-
             var commands = _commandRepo.GetCommandsForPlatform(platformId);
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commands));
         }
@@ -36,23 +32,14 @@ namespace MicroservicesLearning.CommandsService.Controllers
         [HttpGet("{commandId}", Name = "GetCommandForPlatform")]
         public IActionResult GetCommandForPlatform (int platformId, int commandId)
         {
-            if (PlatformExists(platformId))
-            {
-                return NotFound();
-            }
-
             var command = _commandRepo.GetCommand(platformId, commandId);
 
-            if (command== null)
+            if (command == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<CommandReadDto>(command));
-        }
 
-        private bool PlatformExists(int platformId)
-        {
-            return _commandRepo.PlatformExists(platformId);
+            return Ok(_mapper.Map<CommandReadDto>(command));
         }
     }
 }

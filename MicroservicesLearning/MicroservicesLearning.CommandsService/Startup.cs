@@ -1,4 +1,4 @@
-﻿
+﻿using MicroservicesLearning.CommandsService.Attributes;
 using MicroservicesLearning.CommandsService.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +13,7 @@ namespace MicroservicesLearning.CommandsService
             services.RegisterRepositories();
 
             services.AddControllers();
+            services.AddScoped<CheckPlatformExistsServiceFilter>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddEndpointsApiExplorer();

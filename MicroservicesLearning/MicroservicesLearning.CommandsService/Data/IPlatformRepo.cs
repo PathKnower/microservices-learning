@@ -9,5 +9,7 @@ namespace MicroservicesLearning.CommandsService.Data
         IEnumerable<Platform> GetAllPlatforms();
 
         void CreatePlatform(Platform platform);
+
+        bool ExternalPlatformExists(int externalPlatformId);
     }
 }

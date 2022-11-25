@@ -1,4 +1,5 @@
 ﻿using MicroservicesLearning.CommandsService.Models;
+using System;
 
 namespace MicroservicesLearning.CommandsService.Data
 {

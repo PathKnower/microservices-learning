@@ -25,6 +25,11 @@ namespace MicroservicesLearning.CommandsService.Data
             return _dbContext.Platforms.ToList();
         }
 
+        public bool ExternalPlatformExists(int externalPlatformId)
+        {
+            return _dbContext.Platforms.Any(x => x.ExternalId == externalPlatformId);
+        }
+
         public bool SaveChanges()
         {
             return _dbContext.SaveChanges() >= 0;

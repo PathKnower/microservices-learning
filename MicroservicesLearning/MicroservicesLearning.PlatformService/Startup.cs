@@ -1,4 +1,5 @@
-﻿using MicroservicesLearning.PlatformService.Data;
+﻿using MicroservicesLearning.PlatformService.AsyncDataServices;
+using MicroservicesLearning.PlatformService.Data;
 using MicroservicesLearning.PlatformService.SyncDataServices.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,7 @@ namespace MicroservicesLearning.PlatformService
             services.RegisterRepositories();
 
             services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
+            services.AddSingleton<IMessageBusClient, RabbitMqClient>();
             services.AddControllers();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -46,8 +48,6 @@ namespace MicroservicesLearning.PlatformService
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 

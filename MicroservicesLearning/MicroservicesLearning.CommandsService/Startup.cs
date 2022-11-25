@@ -1,5 +1,7 @@
-﻿using MicroservicesLearning.CommandsService.Attributes;
+﻿using MicroservicesLearning.CommandsService.AsyncDataServices;
+using MicroservicesLearning.CommandsService.Attributes;
 using MicroservicesLearning.CommandsService.Data;
+using MicroservicesLearning.CommandsService.EventProcessing;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroservicesLearning.CommandsService
@@ -14,6 +16,8 @@ namespace MicroservicesLearning.CommandsService
 
             services.AddControllers();
             services.AddScoped<CheckPlatformExistsServiceFilter>();
+            services.AddSingleton<IEventProcessor, EventProcessor>();
+            services.AddHostedService<RabbitMQSubscriber>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddEndpointsApiExplorer();

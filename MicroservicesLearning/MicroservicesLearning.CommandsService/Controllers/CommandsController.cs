@@ -2,13 +2,14 @@
 using MicroservicesLearning.CommandsService.Attributes;
 using MicroservicesLearning.CommandsService.Data;
 using MicroservicesLearning.CommandsService.Dtos;
+using MicroservicesLearning.CommandsService.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesLearning.CommandsService.Controllers
 {
-    [ServiceFilter(typeof(CheckPlatformExistsServiceFilter))]
     [Route("api/c/platforms/{platformId}/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(CheckPlatformExistsServiceFilter))]
     public class CommandsController : ControllerBase
     {
         private readonly ICommandRepo _commandRepo;
@@ -40,6 +41,21 @@ namespace MicroservicesLearning.CommandsService.Controllers
             }
 
             return Ok(_mapper.Map<CommandReadDto>(command));
+        }
+
+        [HttpPost]
+        public ActionResult CreateCommandForPlatform(int platformId, CommandCreateDto commandCreateDto)
+        {
+            var command = _mapper.Map<Command>(commandCreateDto);
+
+            _commandRepo.CreateCommand(platformId, command);
+            _commandRepo.SaveChanges();
+
+            var commandReadDto = _mapper.Map<CommandReadDto>(command);
+
+            return CreatedAtRoute(nameof(GetCommandForPlatform), 
+                new { platformId = platformId, command = commandReadDto.Id},
+                commandReadDto);
         }
     }
 }

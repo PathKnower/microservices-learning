@@ -17,6 +17,7 @@ spec:
       containers: 
         - name: platformservice
           image: pathknower/platformservice:latest
+          imagePullPolicy: "Always"
 ---
 apiVersion: v1
 kind: Service

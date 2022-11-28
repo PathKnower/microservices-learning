@@ -17,6 +17,7 @@ spec:
       containers: 
         - name: commandservice
           image: pathknower/commandservice:latest
+          imagePullPolicy: "Always"
 ---
 apiVersion: v1
 kind: Service

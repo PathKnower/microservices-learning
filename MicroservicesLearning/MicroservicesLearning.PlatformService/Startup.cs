@@ -50,7 +50,6 @@ namespace MicroservicesLearning.PlatformService
             }
 
             app.UseAuthorization();
-
             app.MapControllers();
 
             PrepDb.PrepPopulation(app, app.Environment.IsProduction());

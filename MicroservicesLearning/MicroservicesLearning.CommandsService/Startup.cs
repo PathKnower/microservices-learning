@@ -2,6 +2,7 @@
 using MicroservicesLearning.CommandsService.Attributes;
 using MicroservicesLearning.CommandsService.Data;
 using MicroservicesLearning.CommandsService.EventProcessing;
+using MicroservicesLearning.CommandsService.SyncDataServices.Grpc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroservicesLearning.CommandsService
@@ -18,6 +19,7 @@ namespace MicroservicesLearning.CommandsService
             services.AddScoped<CheckPlatformExistsServiceFilter>();
             services.AddSingleton<IEventProcessor, EventProcessor>();
             services.AddHostedService<RabbitMQSubscriber>();
+            services.AddScoped<IPlatformDataClient, PlatformDataClient>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddEndpointsApiExplorer();
@@ -39,8 +41,9 @@ namespace MicroservicesLearning.CommandsService
             }
 
             app.UseAuthorization();
-
             app.MapControllers();
+
+            PrepDb.PrepPopulation(app);
         }
     }
 }

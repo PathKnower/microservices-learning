@@ -1,5 +1,6 @@
 ﻿using MicroservicesLearning.PlatformService.AsyncDataServices;
 using MicroservicesLearning.PlatformService.Data;
+using MicroservicesLearning.PlatformService.SyncDataServices.Grpc;
 using MicroservicesLearning.PlatformService.SyncDataServices.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,7 @@ namespace MicroservicesLearning.PlatformService
 
             services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddSingleton<IMessageBusClient, RabbitMqClient>();
+            services.AddGrpc();
             services.AddControllers();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -51,6 +53,11 @@ namespace MicroservicesLearning.PlatformService
 
             app.UseAuthorization();
             app.MapControllers();
+            app.MapGrpcService<GrpcPlatformService>();
+            app.MapGet("/protos/platforms.proto", async context =>
+            {
+                await context.Response.WriteAsync(File.ReadAllText("Protos/platforms.proto"));
+            });
 
             PrepDb.PrepPopulation(app, app.Environment.IsProduction());
         }

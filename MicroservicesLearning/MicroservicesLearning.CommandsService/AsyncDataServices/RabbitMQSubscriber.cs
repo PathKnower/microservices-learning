@@ -25,15 +25,15 @@ namespace MicroservicesLearning.CommandsService.AsyncDataServices
         {
             var factory = new ConnectionFactory()
             {
-                HostName = _configuration["RabbitMQHost"],
-                Port = int.Parse(_configuration["RabbitMQPort"])
+                HostName = _configuration[Constants.RabbitMQ_HOST_CONFIG_NAME],
+                Port = int.Parse(_configuration[Constants.RabbitMQ_PORT_CONFIG_PORT])
             };
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare("trigger", ExchangeType.Fanout);
+            _channel.ExchangeDeclare(_configuration[Constants.RabbitMQ_EXCHANGE_CONFIG_NAME], ExchangeType.Fanout);
             _queueName = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(_queueName, "trigger", string.Empty);
+            _channel.QueueBind(_queueName, _configuration[Constants.RabbitMQ_EXCHANGE_CONFIG_NAME], string.Empty);
 
             Console.WriteLine("--> Listening on the Message bus...");
 

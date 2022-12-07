@@ -10,14 +10,16 @@ namespace MicroservicesLearning.PlatformService.AsyncDataServices
         private readonly IConfiguration _configuration;
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly string _exchangeName;
 
         public RabbitMqClient(IConfiguration configuration)
         {
+            _exchangeName = _configuration[Constants.RabbitMQ_EXCHANGE_CONFIG_NAME];
             _configuration = configuration;
             var factory = new ConnectionFactory()
             {
-                HostName = _configuration["RabbitMQHost"],
-                Port = int.Parse(_configuration["RabbitMQPort"])
+                HostName = _configuration[Constants.RabbitMQ_HOST_CONFIG_NAME],
+                Port = int.Parse(_configuration[Constants.RabbitMQ_PORT_CONFIG_PORT])
             };
 
             try
@@ -25,7 +27,7 @@ namespace MicroservicesLearning.PlatformService.AsyncDataServices
                 _connection = factory.CreateConnection();
                 _channel = _connection.CreateModel();
 
-                _channel.ExchangeDeclare("trigger", ExchangeType.Fanout);
+                _channel.ExchangeDeclare(_exchangeName, ExchangeType.Fanout);
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
                 Console.WriteLine("--> Connected to the Message Bus");
             }
@@ -58,7 +60,7 @@ namespace MicroservicesLearning.PlatformService.AsyncDataServices
         private void SendMessage(string message)
         {
             var body = Encoding.UTF8.GetBytes(message);
-            _channel.BasicPublish("trigger", string.Empty, null, body);
+            _channel.BasicPublish(_exchangeName, string.Empty, null, body);
             Console.WriteLine($"--> Message sent {message}");
         }
 

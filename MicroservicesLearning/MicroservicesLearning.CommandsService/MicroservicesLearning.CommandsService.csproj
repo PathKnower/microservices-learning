@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="docker_build.ps1" />
+    <None Remove="docker_push.ps1" />
+    <None Remove="refresh_image.ps1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.Net.Client" Version="2.50.0" />
@@ -25,6 +31,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroservicesLearning.Common\MicroservicesLearning.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
